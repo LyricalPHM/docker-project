@@ -1,0 +1,32 @@
+services:
+  web:
+    image: ${APP_IMAGE:-docker.io/lyricalphm/docker_project:latest}
+    container_name: cd_docker_web
+    ports:
+      - "8080:5000"
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cd_docker_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - web
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cd_docker_grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: always
+
+volumes:
+  grafana_data:

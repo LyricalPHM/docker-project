@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    image: cd-docker-project-dev:latest
+    volumes:
+      - .:/app
+    environment:
+      FLASK_DEBUG: "1"
+    command: flask --app app run --host=0.0.0.0 --port=5000 --debug

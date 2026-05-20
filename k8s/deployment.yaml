@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cd-docker-web
+  namespace: cd-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cd-docker-web
+  template:
+    metadata:
+      labels:
+        app: cd-docker-web
+    spec:
+      containers:
+        - name: web
+          image: docker.io/lyricalphm/docker_project:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
