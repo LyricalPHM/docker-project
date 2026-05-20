@@ -84,14 +84,20 @@ jobs:
               docker ps
 
               echo "=== Kubernetes deploy ==="
-              kubectl apply -f k8s/
+
+              kubectl apply -f k8s/namespace.yaml
+
+              until kubectl get namespace cd-lab >/dev/null 2>&1; do
+                echo "Waiting for namespace cd-lab..."
+                sleep 2
+              done
+
+              kubectl apply -f k8s/deployment.yaml
+              kubectl apply -f k8s/service.yaml
+              kubectl apply -f k8s/hpa.yaml
+
               kubectl -n cd-lab set image deployment/cd-docker-web web=${{ env.IMAGE_NAME }}:${{ github.sha }}
               kubectl -n cd-lab rollout status deployment/cd-docker-web --timeout=180s
-
-              echo "=== Kubernetes status ==="
-              kubectl -n cd-lab get pods
-              kubectl -n cd-lab get svc
-              kubectl -n cd-lab get hpa
           DEPLOY
 
       - name: Check Docker Compose application
