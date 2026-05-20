@@ -12,7 +12,7 @@ REQUESTS = Counter(
 @app.route("/")
 def home():
     REQUESTS.inc()
-    return "Hello, Continuous Deployment from VPS!"
+    return "Hello, CD was updated automatically on VPS!"
 
 @app.route("/health")
 def health():
